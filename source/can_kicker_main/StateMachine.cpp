@@ -18,6 +18,24 @@ void StateMachine::update() {
   int sensor = analogRead(Pin::Sensor);
   unsigned long t = millis() - _t0;
   switch (_st) {
+    case State::IDLE:
+      _motor->setSpeed(0);
+      _motor->brake(true);
+      if(!digitalRead(Pin::StartSW)){
+        MotorDriver::releasePoweSave();
+        change(State::BARK);
+      }
+      break;
+    case State::BARK:
+      digitalWrite(Pin::DinosaurBark, LOW); //一度Lowにする
+      delay(10);
+      digitalWrite(Pin::DinosaurBark, HIGH); //吠え初め
+      delay(3000);
+      digitalWrite(Pin::DinosaurBark, LOW); //一度Lowにする
+      delay(10);
+      digitalWrite(Pin::DinosaurBark, HIGH); //吠え終わり
+      change(State::Run);
+      break;
     case State::RUN:
       if (_pwm < Motor::SPEED_MAX) {
         _pwm += Motor::ACC_STEP;

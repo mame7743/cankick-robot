@@ -4,7 +4,7 @@
 #include "Encoder.h"
 class StateMachine {
 public:
-  enum class State : uint8_t { RUN, DECEL, SEARCH, STOPPED, KICK, END };
+  enum class State : uint8_t { IDLE, BARK, RUN, DECEL, SEARCH, STOPPED, KICK, END };
   void begin(MotorDriver* md, Encoder* enc);
   void update();
 private:
@@ -13,7 +13,7 @@ private:
   unsigned long _t0 = 0;
   long long _encStart = 0;
   int _pwm = 0;
-  State _st = State::RUN;
+  State _st = State::IDLE;
   void change(State s);
 };
 #endif // STATEMACHINE_H

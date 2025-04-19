@@ -36,3 +36,11 @@ void MotorDriver::setSpeed(int duty) {
 void MotorDriver::brake(bool on) {
   digitalWrite(Pin::BRK, on ? HIGH : LOW);
 }
+
+void MotorDriver::releasePoweSave(){
+  digitalWrite(Pin::PSB, HIGH);
+  delay(500);
+  digitalWrite(Pin::PSB, LOW);
+  delay(1500);
+  digitalWrite(Pin::PSB, HIGH);
+}

@@ -13,6 +13,8 @@ constexpr int Sensor = 32;    // 停止線センサ
 constexpr int Solenoid = 22;  // キック機構
 constexpr int EncA = 34;
 constexpr int EncB = 35;
+constexpr int StartSW = 25;
+constexpr int DinosaurBark = 26;
 }
 namespace Motor {
 constexpr int PWM_FREQ = 1000;

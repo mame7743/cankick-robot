@@ -12,7 +12,10 @@ void setup() {
   encoder.reset();
   pinMode(Pin::Sensor, INPUT);
   pinMode(Pin::Solenoid, OUTPUT);
+  pinMode(Pin::StartSW, INPUT_PULLUP);
+  pinMode(Pin::DinosaurBark, OUTPUT);
   digitalWrite(Pin::Solenoid, LOW);
+  digitalWrite(Pin::DinosaurBark, HIGH);
   fsm.begin(&motor, &encoder);
 }
 void loop() {
