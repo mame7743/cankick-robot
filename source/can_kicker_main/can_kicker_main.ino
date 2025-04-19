@@ -10,13 +10,13 @@ void setup() {
   motor.begin();  // 方向を変える場合: motor.begin(MotorDriver::Dir::REV);
   encoder.begin();
   encoder.reset();
-  pinMode(Pin::Sensor, INPUT);
+  pinMode(Pin::LineSensor, INPUT);
   pinMode(Pin::Solenoid, OUTPUT);
   pinMode(Pin::StartSW, INPUT_PULLUP);
   pinMode(Pin::DinosaurBark, OUTPUT);
   digitalWrite(Pin::Solenoid, LOW);
   digitalWrite(Pin::DinosaurBark, HIGH);
-  fsm.begin(&motor, &encoder);
+  fsm.begin(&motor, &encoder, StateMachine::State::IDLE);
 }
 void loop() {
   fsm.update();

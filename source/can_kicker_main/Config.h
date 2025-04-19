@@ -9,18 +9,18 @@ constexpr int Mode = 4;
 constexpr int PSB = 16;
 constexpr int BRK = 17;
 constexpr int Full = 5;
-constexpr int Sensor = 32;    // 停止線センサ
+constexpr int LineSensor = 32;    // 停止線センサ
 constexpr int Solenoid = 22;  // キック機構
 constexpr int EncA = 34;
 constexpr int EncB = 35;
-constexpr int StartSW = 25;
-constexpr int DinosaurBark = 26;
+constexpr int StartSW = 26;
+constexpr int DinosaurBark = 27;
 }
 namespace Motor {
 constexpr int PWM_FREQ = 1000;
 constexpr int PWM_RES = 12;  // 0‑4095
-constexpr int SPEED_MAX = 3000;
-constexpr int SPEED_MIN = 600;
+constexpr int SPEED_MAX = 2000;
+constexpr int SPEED_MIN = 1500;
 constexpr int ACC_STEP = 120;
 constexpr int DEC_STEP = 200;
 }

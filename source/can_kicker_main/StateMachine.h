@@ -5,9 +5,10 @@
 class StateMachine {
 public:
   enum class State : uint8_t { IDLE, BARK, RUN, DECEL, SEARCH, STOPPED, KICK, END };
-  void begin(MotorDriver* md, Encoder* enc);
+  void begin(MotorDriver* md, Encoder* enc, State s);
   void update();
 private:
+  static const char* stateNames[];
   MotorDriver* _motor = nullptr;
   Encoder* _enc = nullptr;
   unsigned long _t0 = 0;
