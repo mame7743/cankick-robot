@@ -10,6 +10,7 @@ public:
   void setDirection(Dir dir);          // 途中で反転可能
   Dir  direction() const { return _dir; }
   void releasePoweSave();
+  void reverseBrake(int ms);
 private:
   int _duty = 0;
   Dir _dir  = Dir::FWD;

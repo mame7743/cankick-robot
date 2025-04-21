@@ -12,9 +12,13 @@ private:
   MotorDriver* _motor = nullptr;
   Encoder* _enc = nullptr;
   unsigned long _t0 = 0;
+  unsigned long _t1 = 0;
   long long _encStart = 0;
   int _pwm = 0;
   State _st = State::IDLE;
   void change(State s);
+  float dis_dist = 0;
+  float dist = 0;
+  bool minset_flag = false;
 };
 #endif // STATEMACHINE_H

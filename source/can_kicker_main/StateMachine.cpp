@@ -1,3 +1,6 @@
+#include "esp32-hal.h"
+#include "HardwareSerial.h"
+#include "esp32-hal-gpio.h"
 #include "StateMachine.h"
 #include "Config.h"
 #include <Arduino.h>
@@ -20,8 +23,9 @@ void StateMachine::change(State s) {
   Serial.println(stateNames[static_cast<uint8_t>(s)]);
 }
 void StateMachine::update() {
-  float dist = _enc->meters();
-  int sensor = analogRead(Pin::LineSensor);
+  dis_dist = _enc->meters() - dist;
+  dist = _enc->meters();
+  int sensor = digitalRead(Pin::LineSensor);
   unsigned long t = millis() - _t0;
   switch (_st) {
     case State::IDLE:
@@ -33,21 +37,32 @@ void StateMachine::update() {
       }
       break;
     case State::BARK:
-      digitalWrite(Pin::DinosaurBark, LOW); //一度Lowにする
-      delay(10);
-      digitalWrite(Pin::DinosaurBark, HIGH); //吠え初め
-      delay(3000);
-      digitalWrite(Pin::DinosaurBark, LOW); //一度Lowにする
-      delay(10);
-      digitalWrite(Pin::DinosaurBark, HIGH); //吠え終わり
+      // digitalWrite(Pin::DinosaurBark, LOW); //一度Lowにする
+      // delay(10);
+      // digitalWrite(Pin::DinosaurBark, HIGH); //吠え初め
+      // delay(3000);
+      // digitalWrite(Pin::DinosaurBark, LOW); //一度Lowにする
+      // delay(10);
+      // digitalWrite(Pin::DinosaurBark, HIGH); //吠え終わり
       change(State::RUN);
+      _t1 = millis();
+      _motor->brake(false);
       break;
     case State::RUN:
       if (_pwm < Motor::SPEED_MAX) {
         _pwm += Motor::ACC_STEP;
+        // if(!minset_flag && dis_dist > 0.00f){
+        //   Motor::SPEED_MIN = _pwm + 10;
+        // }
       }
+      // else{
+      //   if(dis_dist == 0.f){
+      //     change(State::DECEL);
+      //   }
+      // }
       _motor->setSpeed(_pwm);
-      if (dist >= Enc::TARGET_DIST || dist <= -Enc::TARGET_DIST) {
+      // if (dist >= Enc::TARGET_DIST || dist <= -Enc::TARGET_DIST) {
+      if ((millis() - _t1) > 6500) {
         change(State::DECEL);
       }
       break;
@@ -60,12 +75,25 @@ void StateMachine::update() {
         _motor->setSpeed(_pwm);
         _encStart = Encoder::_counts;
         change(State::SEARCH);
+        _motor->brake(true);
+        delay(10);
       }
       break;
     case State::SEARCH:
       {
+        _motor->brake(false);
+        // if(!minset_flag){
+          if(dis_dist > 0.00f){
+            _pwm -= 1;
+          }else{
+            _pwm += 1;
+            // minset_flag = true;
+          }
+          delay(1);
+        // }
         _motor->setSpeed(_pwm);
-        if (sensor < SensorConst::STOPLINE_THRESHOLD) {
+        // if (sensor < SensorConst::STOPLINE_THRESHOLD) {
+        if (!sensor) {
           _motor->setSpeed(0);
           _motor->brake(true);
           change(State::STOPPED);
@@ -82,10 +110,11 @@ void StateMachine::update() {
     case State::STOPPED:
       _motor->setSpeed(0);
       _motor->brake(true);
+      _encStart = _enc->_counts;
       change(State::KICK);
       break;
     case State::KICK:
-      if (t >= 1000) {
+      if (t >= 2000) {
         digitalWrite(Pin::Solenoid, HIGH);
         change(State::END);
       }
@@ -93,6 +122,8 @@ void StateMachine::update() {
     case State::END:
       _motor->setSpeed(0);
       _motor->brake(true);
+      Serial.print("moved: ");
+      Serial.println((_enc->_counts - _encStart) * Enc::M_PER_CNT);
       break;
   }
 }

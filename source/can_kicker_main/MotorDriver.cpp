@@ -8,9 +8,6 @@ void MotorDriver::_applyDir() {
     digitalWrite(Pin::InA, LOW);
     digitalWrite(Pin::InB, HIGH);
   }
-  digitalWrite(Pin::Mode, LOW);  // 固定（INxモード）
-  digitalWrite(Pin::PSB, HIGH);
-  digitalWrite(Pin::Full, HIGH);
 }
 void MotorDriver::begin(Dir dir) {
   ledcAttach(Pin::PWM, Motor::PWM_FREQ, Motor::PWM_RES);
@@ -20,6 +17,9 @@ void MotorDriver::begin(Dir dir) {
   pinMode(Pin::PSB, OUTPUT);
   pinMode(Pin::BRK, OUTPUT);
   pinMode(Pin::Full, OUTPUT);
+  digitalWrite(Pin::Mode, LOW);  // 固定（INxモード）
+  digitalWrite(Pin::PSB, LOW);
+  digitalWrite(Pin::Full, HIGH);
   _dir = dir;
   _applyDir();
   brake(true);  // 初期はブレーキON
@@ -31,7 +31,7 @@ void MotorDriver::setDirection(Dir dir) {
 }
 void MotorDriver::setSpeed(int duty) {
   _duty = constrain(duty, 0, (1 << Motor::PWM_RES) - 1);
-  ledcWrite(0, _duty);
+  ledcWrite(Pin::PWM, _duty);
 }
 void MotorDriver::brake(bool on) {
   digitalWrite(Pin::BRK, on ? HIGH : LOW);
@@ -39,8 +39,14 @@ void MotorDriver::brake(bool on) {
 
 void MotorDriver::releasePoweSave(){
   digitalWrite(Pin::PSB, HIGH);
-  delay(500);
+  delay(1000);
   digitalWrite(Pin::PSB, LOW);
   delay(1500);
   digitalWrite(Pin::PSB, HIGH);
+}
+
+void MotorDriver::reverseBrake(int ms){
+  setDirection(Dir::REV);
+  delay(ms);
+  brake(true);
 }

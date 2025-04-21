@@ -19,18 +19,21 @@ constexpr int DinosaurBark = 27;
 namespace Motor {
 constexpr int PWM_FREQ = 1000;
 constexpr int PWM_RES = 12;  // 0‑4095
-constexpr int SPEED_MAX = 2000;
-constexpr int SPEED_MIN = 1500;
-constexpr int ACC_STEP = 120;
-constexpr int DEC_STEP = 200;
+constexpr int SPEED_MAX = 1050;
+constexpr int SPEED_MIN = 750;
+constexpr int SPEED_MORE_MIN = 600;
+constexpr int ACC_STEP = 10;
+constexpr int DEC_STEP = 30;
 }
 namespace Enc {
 constexpr float CPR = 2048.0f * 4;  // 8192 counts/rot
 constexpr float WHEEL_D_M = 0.049f;
 constexpr float CIRCUMF = PI * WHEEL_D_M;
-constexpr float M_PER_CNT = CIRCUMF / CPR;
-constexpr float TARGET_DIST = 4.0f;
-constexpr float SEARCH_STEP = 1.1f;
+constexpr float M_PER_CNT = -CIRCUMF / CPR;
+constexpr float TARGET_DIST = 3.5f;
+// constexpr float TARGET_DIST = 0.0f;
+// constexpr float SEARCH_STEP = 1.1f;
+constexpr float SEARCH_STEP = 100.f; //テスト用
 }
 namespace SensorConst {
 constexpr int STOPLINE_THRESHOLD = 100;
