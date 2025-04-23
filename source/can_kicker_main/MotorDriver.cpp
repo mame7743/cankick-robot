@@ -30,7 +30,7 @@ void MotorDriver::setDirection(Dir dir) {
   _applyDir();
 }
 void MotorDriver::setSpeed(int duty) {
-  _duty = constrain(duty, 0, (1 << Motor::PWM_RES) - 1);
+  _duty = constrain(duty, 0, (1 << (Motor::PWM_RES)) - 1);
   ledcWrite(Pin::PWM, _duty);
 }
 void MotorDriver::brake(bool on) {

@@ -37,14 +37,13 @@ void StateMachine::update() {
       }
       break;
     case State::BARK:
-      // digitalWrite(Pin::DinosaurBark, LOW); //一度Lowにする
-      // delay(10);
-      // digitalWrite(Pin::DinosaurBark, HIGH); //吠え初め
+      // digitalWrite(Pin::DinosaurBark, LOW); //吠え初め
       // delay(3000);
-      // digitalWrite(Pin::DinosaurBark, LOW); //一度Lowにする
+      // digitalWrite(Pin::DinosaurBark, HIGH); //一度Lowにする
       // delay(10);
-      // digitalWrite(Pin::DinosaurBark, HIGH); //吠え終わり
+      // digitalWrite(Pin::DinosaurBark, LOW); //吠え終わり
       change(State::RUN);
+      // change(State::SEARCH);
       _t1 = millis();
       _motor->brake(false);
       break;
@@ -62,8 +61,9 @@ void StateMachine::update() {
       // }
       _motor->setSpeed(_pwm);
       // if (dist >= Enc::TARGET_DIST || dist <= -Enc::TARGET_DIST) {
-      if ((millis() - _t1) > 6500) {
+      if ((millis() - _t1) > 1000) {
         change(State::DECEL);
+        // change(State::STOPPED);
       }
       break;
     case State::DECEL:
@@ -75,20 +75,25 @@ void StateMachine::update() {
         _motor->setSpeed(_pwm);
         _encStart = Encoder::_counts;
         change(State::SEARCH);
-        _motor->brake(true);
-        delay(10);
+        // _motor->brake(true);
+        // delay(10);
       }
       break;
     case State::SEARCH:
       {
         _motor->brake(false);
         // if(!minset_flag){
-          if(dis_dist > 0.00f){
-            _pwm -= 1;
-          }else{
-            _pwm += 1;
-            // minset_flag = true;
-          }
+        //   if(dis_dist > 0.00f){
+        //   // if(dis_dist > 0.00001f){
+        //     _pwm -= 1;
+        //   }else{
+        //     _pwm += 1;
+        //     // minset_flag = true;
+        //   }
+        // // if (_pwm > Motor::SPEED_MIN) {
+        // //   _pwm = Motor::DEC_STEP;
+        // //  }
+        //   Serial.println(_pwm);
           delay(1);
         // }
         _motor->setSpeed(_pwm);
@@ -99,12 +104,12 @@ void StateMachine::update() {
           change(State::STOPPED);
           break;
         }
-        float moved = (_enc->_counts - _encStart) * Enc::M_PER_CNT;
-        if (moved >= Enc::SEARCH_STEP || moved <= -Enc::SEARCH_STEP) {
-          _motor->setSpeed(0);
-          _motor->brake(true);
-          change(State::STOPPED);
-        }
+        // float moved = (_enc->_counts - _encStart) * Enc::M_PER_CNT;
+        // if (moved >= Enc::SEARCH_STEP || moved <= -Enc::SEARCH_STEP) {
+        //   _motor->setSpeed(0);
+        //   _motor->brake(true);
+        //   change(State::STOPPED);
+        // }
         break;
       }
     case State::STOPPED:
@@ -124,6 +129,9 @@ void StateMachine::update() {
       _motor->brake(true);
       Serial.print("moved: ");
       Serial.println((_enc->_counts - _encStart) * Enc::M_PER_CNT);
+      if(t >= 10000){
+        digitalWrite(Pin::Solenoid, LOW);
+      }
       break;
   }
 }

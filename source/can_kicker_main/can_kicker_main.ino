@@ -15,6 +15,8 @@ void setup() {
   pinMode(Pin::StartSW, INPUT_PULLUP);
   pinMode(Pin::DinosaurBark, OUTPUT);
   digitalWrite(Pin::Solenoid, LOW);
+  digitalWrite(Pin::DinosaurBark, LOW);
+  delay(10);
   digitalWrite(Pin::DinosaurBark, HIGH);
   fsm.begin(&motor, &encoder, StateMachine::State::IDLE);
 }

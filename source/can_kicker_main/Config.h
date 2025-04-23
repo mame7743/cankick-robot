@@ -17,10 +17,11 @@ constexpr int StartSW = 26;
 constexpr int DinosaurBark = 27;
 }
 namespace Motor {
-constexpr int PWM_FREQ = 1000;
+constexpr int PWM_FREQ = 15000;
 constexpr int PWM_RES = 12;  // 0‑4095
-constexpr int SPEED_MAX = 1050;
-constexpr int SPEED_MIN = 750;
+// constexpr int SPEED_MAX = 1050;
+constexpr int SPEED_MAX = 4000;
+constexpr int SPEED_MIN = 4000;
 constexpr int SPEED_MORE_MIN = 600;
 constexpr int ACC_STEP = 10;
 constexpr int DEC_STEP = 30;
